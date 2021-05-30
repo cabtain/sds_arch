@@ -28,7 +28,7 @@ public class WindowEquipmentData implements Serializable{
 	private long totalCount;
 	@Column(value = "totalsum")
 	private long totalSum;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="MST")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT")
 	@Column(value = "timestamp")
 	private Date timeStamp;
 	

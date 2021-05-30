@@ -14,7 +14,7 @@ public class WindowEquipmentData implements Serializable {
 	private String sensorType;
 	private long totalCount;
 	private long totalSum;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="MST")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT")
 	private Date timeStamp;
 	private String recordDate;
 	

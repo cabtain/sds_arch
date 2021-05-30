@@ -14,7 +14,7 @@ public class IoTData implements Serializable{
 	private String eventId;
 	private String equipmentId;
 	private String sensorType;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="MST")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT")
 	private Date timestamp;
 	private double value;
     private Map<String, String> metaData;
