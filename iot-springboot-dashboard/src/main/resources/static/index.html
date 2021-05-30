@@ -1,0 +1,115 @@
+<html>
+
+<head>
+    <title>Equipments Data Monitoring Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+	<style>
+		/* Optional: Makes the sample page fill the window. */
+		html, body {
+			height: 100%;
+			margin: 0;
+			padding: 0;
+		}
+	</style>
+
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="text-center">Equipments Data Monitoring Dashboard</h2>
+			</div>
+		</div>
+	<br>
+	<br>
+	<div class="row">
+		<div class="col-md-6">
+			<table class="table outerTable">
+				<thead>
+					<tr>
+						<th>Total Equipments Chart</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><canvas id="totalEquipmentChart"></canvas></td>
+					</tr>
+			    </tbody>
+			</table>
+			<table class="table outerTable">
+				<thead>
+					<tr>
+						<th>Total Equipments Data</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>	
+							<div id="total_equipment">
+								<table class="table table-bordered table-condensed table-hover innerTable">
+									<tr>
+										<thead>
+											<th>Equipment</th><th>Type</th><th>Count</th><th>Average</th><th>Time</th>
+										</thead>
+									</tr>
+								</table>
+							</div>	
+						</td>
+					</tr>
+			    </tbody>
+			</table>
+		</div>
+		<div class="col-md-6">
+			<table class="table outerTable">
+				<thead>
+					<tr>
+						<th>Last 30 Seconds Chart</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><canvas id="windowEquipmentChart"></canvas></td>
+					</tr>
+			    </tbody>
+			</table>
+			<table class="table outerTable">
+				<thead>
+					<tr>
+						<th>Last 30 Seconds Window</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>	
+							<div id="window_equipment">
+								<table class="table table-bordered table-condensed table-hover innerTable">
+									<tr>
+										<thead>
+											<th>Equipment</th><th>Type</th><th>Count</th><th>Average</th><th>Time</th>
+										</thead>
+									</tr>
+								</table>
+							</div>	
+						</td>
+					</tr>
+			    </tbody>
+			</table>		
+		</div>
+	</div>
+		<br>
+		<br>
+		<br>
+		<br>
+</div>
+
+	<script type="text/javascript" src="js/jquery-1.12.4.min.js"></script>
+	<script type="text/javascript" src="js/sockjs-1.1.1.min.js"></script>
+	<script type="text/javascript" src="js/stomp.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>`
+	<script type="text/javascript" src="js/Chart.min.js"></script>
+	<script type="text/javascript" src="js/script.js"></script>
+
+</body>
+</html>
