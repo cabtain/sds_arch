@@ -1,4 +1,4 @@
-# SDS Archtect(Lambda architecture)
+# SDS Architect(Lambda architecture)
 
 
 Our project receives real-time IoT Data Events coming from the factory equipments, 
