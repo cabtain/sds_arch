@@ -1,8 +1,7 @@
-# Lambda architecture
+# SDS Archtect(Lambda architecture)
 
-![Alt text](diagram.png?raw=true "Lambda architecture")
 
-Our Lambda project receives real-time IoT Data Events coming from the factory equipments, 
+Our project receives real-time IoT Data Events coming from the factory equipments, 
 then ingested to Spark through Kafka. Using the Spark streaming API, we processed and analysed 
 IoT data events and transformed them into some information.
 While simultaneously the data is also stored into HDFS for Batch processing. 
