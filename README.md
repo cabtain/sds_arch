@@ -1,8 +1,7 @@
-# Lambda architecture
+# SDS Architect(Lambda architecture)
 
-![Alt text](diagram.png?raw=true "Lambda architecture")
 
-Our Lambda project receives real-time IoT Data Events coming from the factory equipments, 
+Our project receives real-time IoT Data Events coming from the factory equipments, 
 then ingested to Spark through Kafka. Using the Spark streaming API, we processed and analysed 
 IoT data events and transformed them into some information.
 While simultaneously the data is also stored into HDFS for Batch processing. 
@@ -77,7 +76,7 @@ Access the dashboard with the data http://34.145.64.35:3000/
 
 http://34.145.64.35:3000/
 
-![image](https://user-images.githubusercontent.com/1121859/120071698-6debdc00-c0cb-11eb-8715-68816177010a.png)
+![image](https://user-images.githubusercontent.com/1121859/120259825-9a704580-c2cf-11eb-8602-974a85595851.png)
 
 
 http://34.145.64.35:8080/
@@ -93,13 +92,21 @@ http://34.145.64.35:4040/jobs/
 
 ![image2021-4-6_12-44-13](https://user-images.githubusercontent.com/1121859/118780952-89830580-b8c7-11eb-9fe2-648ce2624849.png)
 
+http://34.145.64.35:4040/streaming/
+
+![image](https://user-images.githubusercontent.com/1121859/120272546-3d34be00-c2e8-11eb-9070-04b128cd821c.png)
+
 http://34.145.64.35:4040/streaming/batch/?id=1617680605000
 
 ![image2021-4-6_12-45-1](https://user-images.githubusercontent.com/1121859/118781094-a6b7d400-b8c7-11eb-96c7-a1de5cdfee99.png)
 
-http://34.145.64.35:4040/jobs/job/?id=485
+http://34.145.64.35:4040/jobs/job/?id=821
 
-![image2021-4-6_12-46-23](https://user-images.githubusercontent.com/1121859/118781203-c0f1b200-b8c7-11eb-92de-8631c8cecbe0.png)
+![image](https://user-images.githubusercontent.com/1121859/120272742-81c05980-c2e8-11eb-9c59-4e5432246add.png)
+
+http://34.145.64.35:4040/stages/stage/?id=2595&attempt=0
+
+![image](https://user-images.githubusercontent.com/1121859/120272406-0363b780-c2e8-11eb-9475-5f14cfff92e8.png)
 
 http://34.145.64.35:50070/
 
