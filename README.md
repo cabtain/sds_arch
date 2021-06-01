@@ -76,7 +76,7 @@ Access the dashboard with the data http://34.145.64.35:3000/
 
 http://34.145.64.35:3000/
 
-![image](https://user-images.githubusercontent.com/1121859/120071698-6debdc00-c0cb-11eb-8715-68816177010a.png)
+![image](https://user-images.githubusercontent.com/1121859/120259825-9a704580-c2cf-11eb-8602-974a85595851.png)
 
 
 http://34.145.64.35:8080/
