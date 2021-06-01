@@ -12,9 +12,6 @@ import java.util.Date;
 
 /**
  * Entity class for window_equipment db table
- * 
- * @author abaghel
- *
  */
 @Table("window_equipment")
 public class WindowEquipmentData implements Serializable{

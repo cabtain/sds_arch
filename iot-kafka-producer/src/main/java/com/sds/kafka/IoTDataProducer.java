@@ -55,6 +55,7 @@ public class IoTDataProducer {
             IoTData event = generateEquipmentData(equipmentList, sensorTypeList, rand);
             producer.send(new KeyedMessage<>(topic, event));
             Thread.sleep(rand.nextInt(300 - 100) + 100);//random delay of 0.1 to 0.3 seconds
+            //Thread.sleep(rand.nextInt(3000 - 1000) + 1000);//random delay of 1 to 3 seconds
         }
     }
 
@@ -67,14 +68,14 @@ public class IoTDataProducer {
         String equipmentId = equipmentList.get(rand.nextInt(3));
         String sensorType = sensorTypeList.get(rand.nextInt(5));
         Date timestamp = new Date();
-        double value = rand.nextInt(100 - 10) + 10;// random speed between 10 to 100
+        double value = rand.nextInt(100 - 10) + 10;// random value between 10 to 100
 
         IoTData event = new IoTData(
-                eventId,
-                equipmentId,
-                sensorType,
-                timestamp,
-                value
+            eventId,
+            equipmentId,
+            sensorType,
+            timestamp,
+            value
         );
 
         return event;
