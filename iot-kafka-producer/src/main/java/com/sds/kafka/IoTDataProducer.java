@@ -37,7 +37,7 @@ public class IoTDataProducer {
     /**
      * Method runs in while loop and generates random IoT data in JSON with below format.
      * <p>
-     * {"eventId":"52f08f03-cd14-411a-8aef-ba87c9a99997","sensorType":"Temperature","routeId":"Equipment_A","timestamp":1465471124373,"value":80.0}
+     * {"eventId":"52f08f03-cd14-411a-8aef-ba87c9a99997","equipmentId":"Equipment_A","sensorType":"Temperature","timestamp":1465471124373,"value":80.0}
      *
      * @throws InterruptedException
      */
@@ -68,7 +68,7 @@ public class IoTDataProducer {
         String equipmentId = equipmentList.get(rand.nextInt(3));
         String sensorType = sensorTypeList.get(rand.nextInt(5));
         Date timestamp = new Date();
-        double value = rand.nextInt(100 - 10) + 10;// random value between 10 to 100
+        double value = rand.nextInt(100 - 1) + 1;// random value between 1 to 100
 
         IoTData event = new IoTData(
             eventId,

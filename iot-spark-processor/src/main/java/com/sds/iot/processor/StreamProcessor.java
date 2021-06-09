@@ -103,12 +103,12 @@ public class StreamProcessor implements Serializable {
     }
 
     public StreamProcessor processTotalEquipmentData() {
-        RealtimeEquipmentDataProcessor.processTotalEquipmentData(filteredStream);
+        RealtimeEquipmentDataProcessor.processTotalEquipmentData(transformedStream);
         return this;
     }
 
     public StreamProcessor processWindowEquipmentData() {
-        RealtimeEquipmentDataProcessor.processWindowEquipmentData(filteredStream);
+        RealtimeEquipmentDataProcessor.processWindowEquipmentData(transformedStream);
         return this;
     }
 
@@ -165,13 +165,13 @@ public class StreamProcessor implements Serializable {
      * @return
      */
     private static Tuple2<IoTData, Boolean> updateState(String str, Optional<IoTData> iot, State<Boolean> state) {
-        Tuple2<IoTData, Boolean> vehicle = new Tuple2<>(iot.get(), false);
+        Tuple2<IoTData, Boolean> equipment = new Tuple2<>(iot.get(), false);
         if (state.exists()) {
-            vehicle = new Tuple2<>(iot.get(), true);
+            equipment = new Tuple2<>(iot.get(), true);
         } else {
             state.update(Boolean.TRUE);
         }
-        return vehicle;
+        return equipment;
     }
 
 }
