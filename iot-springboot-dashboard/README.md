@@ -28,4 +28,4 @@ Alternate way to run this application is using the “iot-springboot-dashboard-1
 ```sh
 java -jar iot-springboot-dashboard-1.0.0.jar
 ```
-Open browser and enter http://localhost:3000 to see the Dashboard
+Open browser and enter http://34.145.64.35:3000/ to see the Dashboard
