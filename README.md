@@ -26,7 +26,7 @@ System stack:
 - HDFS
 
 
-The streaming part of the project was done from iot-traffic-project [InfoQ](https://www.infoq.com/articles/traffic-data-monitoring-iot-kafka-and-spark-streaming)
+The streaming part of the project was been referenced from iot-traffic-project [InfoQ](https://www.infoq.com/articles/traffic-data-monitoring-iot-kafka-and-spark-streaming)
 
 
 ### git clone
