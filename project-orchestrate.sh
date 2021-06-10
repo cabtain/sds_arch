@@ -20,13 +20,13 @@ docker exec kafka-iot kafka-topics --create --topic iot-data-event --partitions 
 #docker exec spark-master apk add --no-cache libc6-compat
 #docker exec spark-worker-1 apk add --no-cache libc6-compat
 # Delete our folders on Hadoop file system
-docker exec namenode hdfs dfs -rm -r /lambda-arch
+docker exec namenode hdfs dfs -rm -r /sds-arch
 # Create our folders on Hadoop file system and total permission to those
-docker exec namenode hdfs dfs -mkdir /lambda-arch
-docker exec namenode hdfs dfs -mkdir /lambda-arch/checkpoint
-docker exec namenode hdfs dfs -mkdir /lambda-arch/iot-data-parque
-docker exec namenode hdfs dfs -chmod -R 777 /lambda-arch
-docker exec namenode hdfs dfs -chmod -R 777 /lambda-arch/checkpoint
-docker exec namenode hdfs dfs -chmod -R 777 /lambda-arch/iot-data-parque
+docker exec namenode hdfs dfs -mkdir /sds-arch
+docker exec namenode hdfs dfs -mkdir /sds-arch/checkpoint
+docker exec namenode hdfs dfs -mkdir /sds-arch/iot-data-parque
+docker exec namenode hdfs dfs -chmod -R 777 /sds-arch
+docker exec namenode hdfs dfs -chmod -R 777 /sds-arch/checkpoint
+docker exec namenode hdfs dfs -chmod -R 777 /sds-arch/iot-data-parque
 
 

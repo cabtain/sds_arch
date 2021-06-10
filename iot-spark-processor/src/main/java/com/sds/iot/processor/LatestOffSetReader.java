@@ -33,9 +33,9 @@ public class LatestOffSetReader {
     }
 
     private JavaRDD<Row> query() throws AnalysisException {
-        parquetData.createTempView("traffic");
+        parquetData.createTempView("equipment");
         return parquetData.sqlContext()
-                .sql("select max(untilOffset) as untilOffset, topic, kafkaPartition from traffic group by topic, kafkaPartition")
+                .sql("select max(untilOffset) as untilOffset, topic, kafkaPartition from equipment group by topic, kafkaPartition")
                 .javaRDD();
     }
 

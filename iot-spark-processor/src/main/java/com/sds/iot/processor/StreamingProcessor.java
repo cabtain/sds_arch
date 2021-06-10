@@ -83,8 +83,6 @@ public class StreamingProcessor implements Serializable {
         StreamProcessor streamProcessor = new StreamProcessor(kafkaStream);
         streamProcessor.transform()
                 .appendToHDFS(sparkSession, parqueFile)
-                //.filterEquipment()
-                //.cache()
                 .processTotalEquipmentData()
                 .processWindowEquipmentData();
 
