@@ -37,8 +37,6 @@ public class StreamProcessor implements Serializable {
 
     final JavaDStream<ConsumerRecord<String, IoTData>> directKafkaStream;
     private JavaDStream<IoTData> transformedStream;
-    private JavaDStream<IoTData> filteredStream;
-
 
     public StreamProcessor(JavaDStream<ConsumerRecord<String, IoTData>> directKafkaStream) {
         this.directKafkaStream = directKafkaStream;
@@ -111,67 +109,4 @@ public class StreamProcessor implements Serializable {
         RealtimeEquipmentDataProcessor.processWindowEquipmentData(transformedStream);
         return this;
     }
-
-    public StreamProcessor filterEquipment() {
-        //We need filtered stream for total and Equipment data calculation
-        var map = mapToPair(transformedStream);
-        var key = reduceByKey(map);
-        var state = mapWithState(key);
-        this.filteredStream = filterByState(state).map(tuple -> tuple._1);
-        return this;
-    }
-
-    private JavaDStream<Tuple2<IoTData, Boolean>> filterByState(final JavaMapWithStateDStream<String, IoTData, Boolean, Tuple2<IoTData, Boolean>> state) {
-        var dsStream = state .filter(tuple -> tuple._2.equals(Boolean.FALSE));
-        logger.info("Starting Stream Processing");
-        dsStream.print();
-        return dsStream;
-    }
-
-    private JavaMapWithStateDStream<String, IoTData, Boolean, Tuple2<IoTData, Boolean>> mapWithState(final JavaPairDStream<String, IoTData> key) {
-        // Check equipment Id is already processed
-        StateSpec<String, IoTData, Boolean, Tuple2<IoTData, Boolean>> stateFunc = StateSpec
-                .function(StreamProcessor::updateState)
-                .timeout(Durations.seconds(3600));//maintain state for one hour
-
-        var dStream = key.mapWithState(stateFunc);
-        dStream.print();
-        return dStream;
-    }
-
-    private JavaPairDStream<String, IoTData> reduceByKey(final JavaPairDStream<String, IoTData> map) {
-        JavaPairDStream<String, IoTData> dStream = map.reduceByKey((a, b) -> a);
-        dStream.print();
-        return dStream;
-    }
-
-    private JavaPairDStream<String, IoTData> mapToPair(final JavaDStream<IoTData> stream){
-        var dStream = stream.mapToPair(iot -> new Tuple2<>(iot.getEventId(), iot));
-        dStream.print();
-        return dStream;
-    }
-
-    public StreamProcessor cache() {
-        this.filteredStream.cache();
-        return this;
-    }
-
-    /**
-     * Create tuple (IotData, boolean) the boolean will  be defined to true if iot object exists in the state
-     *
-     * @param str
-     * @param iot
-     * @param state
-     * @return
-     */
-    private static Tuple2<IoTData, Boolean> updateState(String str, Optional<IoTData> iot, State<Boolean> state) {
-        Tuple2<IoTData, Boolean> equipment = new Tuple2<>(iot.get(), false);
-        if (state.exists()) {
-            equipment = new Tuple2<>(iot.get(), true);
-        } else {
-            state.update(Boolean.TRUE);
-        }
-        return equipment;
-    }
-
 }

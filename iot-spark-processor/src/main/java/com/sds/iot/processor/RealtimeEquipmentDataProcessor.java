@@ -35,11 +35,11 @@ public class RealtimeEquipmentDataProcessor {
      * Method to get window equipment counts of different type of sensors for each equipment. Window duration = 30 seconds
      * and Slide interval = 5 seconds
      *
-     * @param filteredIotDataStream IoT data stream
+     * @param transformedStream IoT data stream
      */
-    public static void processWindowEquipmentData(JavaDStream<IoTData> filteredIotDataStream) {
+    public static void processWindowEquipmentData(JavaDStream<IoTData> transformedStream) {
         // reduce by key and window (30 sec window and 5 sec slide).
-        JavaDStream<WindowEquipmentData> equipmentDStream = filteredIotDataStream
+        JavaDStream<WindowEquipmentData> equipmentDStream = transformedStream
                 .mapToPair(iot -> new Tuple2<>(new AggregateKey(iot.getEquipmentId(), iot.getSensorType()), 
                     new AggregateValue(1L, new Double(iot.getValue()).longValue())))
                 .reduceByKeyAndWindow(((Function2<AggregateValue, AggregateValue, AggregateValue>) (a, b) -> 
@@ -53,16 +53,16 @@ public class RealtimeEquipmentDataProcessor {
     /**
      * Method to get total equipment counts of different type of sensors for each equipment.
      *
-     * @param filteredIotDataStream IoT data stream
+     * @param transformedStream IoT data stream
      */
-    public static void processTotalEquipmentData(JavaDStream<IoTData> filteredIotDataStream) {
+    public static void processTotalEquipmentData(JavaDStream<IoTData> transformedStream) {
         // Need to keep state for total count
         StateSpec<AggregateKey, AggregateValue, AggregateValue, Tuple2<AggregateKey, AggregateValue>> stateSpec = StateSpec
                 .function(RealtimeEquipmentDataProcessor::updateState)
                 .timeout(Durations.seconds(3600));
 
         // We need to get count of sensor group by equipmentId and sensorType
-        JavaDStream<TotalEquipmentData> equipmentDStream = filteredIotDataStream
+        JavaDStream<TotalEquipmentData> equipmentDStream = transformedStream
                 .mapToPair(iot -> new Tuple2<>(new AggregateKey(iot.getEquipmentId(), iot.getSensorType()), 
                     new AggregateValue(1L, new Double(iot.getValue()).longValue())))
                 .reduceByKey((Function2<AggregateValue, AggregateValue, AggregateValue>) (a, b) -> 
@@ -91,7 +91,6 @@ public class RealtimeEquipmentDataProcessor {
                 CassandraJavaUtil.mapToRow(TotalEquipmentData.class, columnNameMappings)
         ).saveToCassandra();
     }
-
 
     private static void saveWindEquipmentData(final JavaDStream<WindowEquipmentData> equipmentDStream) {
         // Map Cassandra table column
@@ -145,7 +144,6 @@ public class RealtimeEquipmentDataProcessor {
         equipmentData.setRecordDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
         return equipmentData;
     }
-
 
     /**
      * Function to get running sum by maintaining the state
