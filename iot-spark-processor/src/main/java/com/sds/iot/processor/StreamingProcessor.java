@@ -58,7 +58,7 @@ public class StreamingProcessor implements Serializable {
 
     private void start() throws Exception {
         String[] jars = {};
-        String parqueFile = prop.getProperty("com.iot.app.hdfs") + "iot-data-parque";
+        String parquetFile = prop.getProperty("com.iot.app.hdfs") + "iot-data-parquet";
         Map<String, Object> kafkaProperties = getKafkaParams(prop);
         SparkConf conf = getSparkConf(prop, jars);
 
@@ -69,7 +69,7 @@ public class StreamingProcessor implements Serializable {
         JavaStreamingContext streamingContext = new JavaStreamingContext(conf, Durations.seconds(5));
         streamingContext.checkpoint(prop.getProperty("com.iot.app.spark.checkpoint.dir"));
         SparkSession sparkSession = SparkSession.builder().config(conf).getOrCreate();
-        Map<TopicPartition, Long> offsets = getOffsets(parqueFile, sparkSession);
+        Map<TopicPartition, Long> offsets = getOffsets(parquetFile, sparkSession);
         JavaInputDStream<ConsumerRecord<String, IoTData>> kafkaStream = getKafkaStream(
                 prop,
                 streamingContext,
@@ -82,7 +82,7 @@ public class StreamingProcessor implements Serializable {
         //Basically we are sending the data to each worker nodes on a Spark cluster.
         StreamProcessor streamProcessor = new StreamProcessor(kafkaStream);
         streamProcessor.transform()
-                .appendToHDFS(sparkSession, parqueFile)
+                .appendToHDFS(sparkSession, parquetFile)
                 .processTotalEquipmentData()
                 .processWindowEquipmentData();
 
@@ -92,9 +92,9 @@ public class StreamingProcessor implements Serializable {
         streamingContext.awaitTermination();
     }
 
-    private Map<TopicPartition, Long> getOffsets(final String parqueFile, final SparkSession sparkSession) {
+    private Map<TopicPartition, Long> getOffsets(final String parquetFile, final SparkSession sparkSession) {
         try {
-            LatestOffSetReader latestOffSetReader = new LatestOffSetReader(sparkSession, parqueFile);
+            LatestOffSetReader latestOffSetReader = new LatestOffSetReader(sparkSession, parquetFile);
             return latestOffSetReader.read().offsets();
         } catch (Exception e) {
             return new HashMap<>();

@@ -15,7 +15,7 @@ import java.util.Properties;
 import scala.reflect.ClassTag;
 
 /**
- * Class responsible to start the process from the parque file
+ * Class responsible to start the process from the parquet file
  */
 public class BatchProcessor {
 
@@ -23,7 +23,7 @@ public class BatchProcessor {
     public static void main(String[] args) throws Exception {
         var prop = PropertyFileReader.readPropertyFile("iot-spark.properties");
         String[] jars = {prop.getProperty("com.iot.app.jar")};
-        var file = prop.getProperty("com.iot.app.hdfs") + "iot-data-parque";
+        var file = prop.getProperty("com.iot.app.hdfs") + "iot-data-parquet";
         var conf = getSparkConfig(prop, jars);
         var sparkSession = SparkSession.builder().config(conf).getOrCreate();
 

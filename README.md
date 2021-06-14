@@ -140,7 +140,7 @@ http://34.145.64.35:50070/
 
 ![image2021-4-6_12-50-19](https://user-images.githubusercontent.com/1121859/118781268-d8309f80-b8c7-11eb-97a8-305c2fb902e1.png)
 
-http://34.145.64.35:50070/explorer.html#/sds-arch/iot-data-parque
+http://34.145.64.35:50070/explorer.html#/sds-arch/iot-data-parquet
 
 ![image2021-4-6_12-51-17](https://user-images.githubusercontent.com/1121859/118781346-eda5c980-b8c7-11eb-8e96-145ac512b9f5.png)
 

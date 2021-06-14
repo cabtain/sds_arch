@@ -24,9 +24,9 @@ docker exec namenode hdfs dfs -rm -r /sds-arch
 # Create our folders on Hadoop file system and total permission to those
 docker exec namenode hdfs dfs -mkdir /sds-arch
 docker exec namenode hdfs dfs -mkdir /sds-arch/checkpoint
-docker exec namenode hdfs dfs -mkdir /sds-arch/iot-data-parque
+docker exec namenode hdfs dfs -mkdir /sds-arch/iot-data-parquet
 docker exec namenode hdfs dfs -chmod -R 777 /sds-arch
 docker exec namenode hdfs dfs -chmod -R 777 /sds-arch/checkpoint
-docker exec namenode hdfs dfs -chmod -R 777 /sds-arch/iot-data-parque
+docker exec namenode hdfs dfs -chmod -R 777 /sds-arch/iot-data-parquet
 
 
