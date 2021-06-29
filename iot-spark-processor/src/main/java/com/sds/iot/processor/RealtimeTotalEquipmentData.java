@@ -24,57 +24,28 @@ import com.sds.iot.dto.IoTData;
 
 import scala.Tuple2;
 
-/**
- * Class to process IoT data stream and to produce equipment data details.
- */
-public class RealtimeEquipmentDataProcessor {
 
-    private static final Logger logger = Logger.getLogger(RealtimeEquipmentDataProcessor.class);
+class RealtimeTotalEquipmentData extends StreamHandler {
 
-    /**
-     * Method to get window equipment counts of different type of sensors for each equipment. Window duration = 30 seconds
-     * and Slide interval = 5 seconds
-     *
-     * @param transformedStream IoT data stream
-     */
-    public static void processWindowEquipmentData(JavaDStream<IoTData> transformedStream) {
-        // reduce by key and window (30 sec window and 5 sec slide).
-        JavaDStream<WindowEquipmentData> equipmentDStream = transformedStream
-                .mapToPair(iot -> new Tuple2<>(new AggregateKey(iot.getEquipmentId(), iot.getSensorType()), 
-                    new AggregateValue(1L, new Double(iot.getValue()).longValue())))
-                .reduceByKeyAndWindow(((Function2<AggregateValue, AggregateValue, AggregateValue>) (a, b) -> 
-                    new AggregateValue(a.getCount() + b.getCount(), a.getSum() + b.getSum())), 
-                    Durations.seconds(30), Durations.seconds(5))
-                .map(RealtimeEquipmentDataProcessor::mapToWindowEquipmentData);
+    private static final Logger logger = Logger.getLogger(RealtimeTotalEquipmentData.class);
 
-        saveWindEquipmentData(equipmentDStream);
-    }
 
-    /**
-     * Method to get total equipment counts of different type of sensors for each equipment.
-     *
-     * @param transformedStream IoT data stream
-     */
-    public static void processTotalEquipmentData(JavaDStream<IoTData> transformedStream) {
+    public void processRequest(StreamProcessor processor) {
         // Need to keep state for total count
         StateSpec<AggregateKey, AggregateValue, AggregateValue, Tuple2<AggregateKey, AggregateValue>> stateSpec = StateSpec
-                .function(RealtimeEquipmentDataProcessor::updateState)
+                .function(RealtimeTotalEquipmentData::updateState)
                 .timeout(Durations.seconds(3600));
 
         // We need to get count of sensor group by equipmentId and sensorType
-        JavaDStream<TotalEquipmentData> equipmentDStream = transformedStream
+        JavaDStream<TotalEquipmentData> equipmentDStream = processor.getTransformedStream()
                 .mapToPair(iot -> new Tuple2<>(new AggregateKey(iot.getEquipmentId(), iot.getSensorType()), 
                     new AggregateValue(1L, new Double(iot.getValue()).longValue())))
                 .reduceByKey((Function2<AggregateValue, AggregateValue, AggregateValue>) (a, b) -> 
                     new AggregateValue(a.getCount() + b.getCount(), a.getSum() + b.getSum()))
                 .mapWithState(stateSpec)
                 .map(tuple2 -> tuple2)
-                .map(RealtimeEquipmentDataProcessor::mapToEquipmentData);
+                .map(RealtimeTotalEquipmentData::mapToEquipmentData);
 
-        saveTotalEquipmentData(equipmentDStream);
-    }
-
-    private static void saveTotalEquipmentData(final JavaDStream<TotalEquipmentData> equipmentDStream) {
         // Map Cassandra table column
         HashMap<String, String> columnNameMappings = new HashMap<>();
         columnNameMappings.put("equipmentId", "equipmentid");
@@ -90,45 +61,8 @@ public class RealtimeEquipmentDataProcessor {
                 "total_equipment",
                 CassandraJavaUtil.mapToRow(TotalEquipmentData.class, columnNameMappings)
         ).saveToCassandra();
-    }
 
-    private static void saveWindEquipmentData(final JavaDStream<WindowEquipmentData> equipmentDStream) {
-        // Map Cassandra table column
-        HashMap<String, String> columnNameMappings = new HashMap<>();
-        columnNameMappings.put("equipmentId", "equipmentid");
-        columnNameMappings.put("sensorType", "sensortype");
-        columnNameMappings.put("totalCount", "totalcount");
-        columnNameMappings.put("totalSum", "totalsum");
-        columnNameMappings.put("timeStamp", "timestamp");
-        columnNameMappings.put("recordDate", "recorddate");
-
-        // call CassandraStreamingJavaUtil function to save in DB
-        javaFunctions(equipmentDStream).writerBuilder(
-                "equipmentkeyspace",
-                "window_equipment",
-                CassandraJavaUtil.mapToRow(WindowEquipmentData.class, columnNameMappings)
-        ).saveToCassandra();
-    }
-
-    /**
-     * Function to create WindowEquipmentData object from IoT data
-     *
-     * @param tuple
-     * @return
-     */
-    private static WindowEquipmentData mapToWindowEquipmentData(Tuple2<AggregateKey, AggregateValue> tuple) {
-        logger.info("Window Count : " +
-                "key " + tuple._1().getEquipmentId() + "-" + tuple._1().getSensorType() +
-                " value " + tuple._2().getCount() + "," + tuple._2().getSum());
-
-        WindowEquipmentData equipmentData = new WindowEquipmentData();
-        equipmentData.setEquipmentId(tuple._1().getEquipmentId());
-        equipmentData.setSensorType(tuple._1().getSensorType());
-        equipmentData.setTotalCount(tuple._2().getCount());
-        equipmentData.setTotalSum(tuple._2().getSum());
-        equipmentData.setTimeStamp(new Date());
-        equipmentData.setRecordDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-        return equipmentData;
+        if(successor != null) successor.processRequest(processor);
     }
 
     private static TotalEquipmentData mapToEquipmentData(Tuple2<AggregateKey, AggregateValue> tuple) {
@@ -168,5 +102,6 @@ public class RealtimeEquipmentDataProcessor {
         state.update(value);
         return total;
     }
-
 }
+
+

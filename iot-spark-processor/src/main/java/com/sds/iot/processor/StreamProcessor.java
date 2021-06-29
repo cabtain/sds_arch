@@ -38,8 +38,16 @@ public class StreamProcessor implements Serializable {
     final JavaDStream<ConsumerRecord<String, IoTData>> directKafkaStream;
     private JavaDStream<IoTData> transformedStream;
 
+    public JavaDStream<IoTData> getTransformedStream() {
+        return transformedStream;
+    }
+
     public StreamProcessor(JavaDStream<ConsumerRecord<String, IoTData>> directKafkaStream) {
         this.directKafkaStream = directKafkaStream;
+    }
+
+    public JavaDStream<ConsumerRecord<String, IoTData>> getDirectKafkaStream() {
+        return directKafkaStream;
     }
 
     private static JavaRDD<IoTData> transformRecord(JavaRDD<ConsumerRecord<String, IoTData>> item) {
@@ -73,40 +81,6 @@ public class StreamProcessor implements Serializable {
 
     public StreamProcessor transform() {
         this.transformedStream = directKafkaStream.transform(StreamProcessor::transformRecord);
-        return this;
-    }
-
-    public StreamProcessor appendToHDFS(final SparkSession sql, final String file) {
-        transformedStream.foreachRDD(rdd -> {
-                    if (rdd.isEmpty()) {
-                        return;
-                    }
-                    Dataset<Row> dataFrame = sql.createDataFrame(rdd, IoTData.class);
-                    Dataset<Row> dfStore = dataFrame.selectExpr(
-                            "equipmentId", "value", "timestamp", "eventId", "sensorType",
-                            "metaData.fromOffset as fromOffset",
-                            "metaData.untilOffset as untilOffset",
-                            "metaData.kafkaPartition as kafkaPartition",
-                            "metaData.topic as topic",
-                            "metaData.dayOfWeek as dayOfWeek"
-                    );
-                    dfStore.printSchema();
-                    dfStore.write()
-                            .partitionBy("topic", "kafkaPartition", "dayOfWeek")
-                            .mode(SaveMode.Append)
-                            .parquet(file);
-                }
-        );
-        return this;
-    }
-
-    public StreamProcessor processTotalEquipmentData() {
-        RealtimeEquipmentDataProcessor.processTotalEquipmentData(transformedStream);
-        return this;
-    }
-
-    public StreamProcessor processWindowEquipmentData() {
-        RealtimeEquipmentDataProcessor.processWindowEquipmentData(transformedStream);
         return this;
     }
 }

@@ -81,10 +81,19 @@ public class StreamingProcessor implements Serializable {
 
         //Basically we are sending the data to each worker nodes on a Spark cluster.
         StreamProcessor streamProcessor = new StreamProcessor(kafkaStream);
-        streamProcessor.transform()
-                .appendToHDFS(sparkSession, parquetFile)
-                .processTotalEquipmentData()
-                .processWindowEquipmentData();
+        streamProcessor.transform();
+
+        //The successors are set like this: hdfs -> total -> window
+        AppendToHDFS hdfs = new AppendToHDFS();
+        hdfs.setSql(sparkSession);
+        hdfs.setFile(parquetFile);
+        RealtimeTotalEquipmentData total = new RealtimeTotalEquipmentData();
+        RealtimeWindowEquipmentData window = new RealtimeWindowEquipmentData();
+
+        hdfs.setSuccessor(total);
+        total.setSuccessor(window);
+
+        hdfs.processRequest(streamProcessor);
 
         commitOffset(kafkaStream);
 
