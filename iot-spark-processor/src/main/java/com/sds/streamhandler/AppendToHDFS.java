@@ -1,13 +1,15 @@
-package com.sds.iot.processor;
-
-import com.sds.iot.dto.IoTData;
+package com.sds.iot.streamhandler;
 
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SaveMode;
 import org.apache.spark.sql.SparkSession;
 
-class AppendToHDFS extends StreamHandler {
+import com.sds.iot.dto.IoTData;
+import com.sds.iot.processor.StreamProcessor;
+import com.sds.iot.processor.StreamHandler;
+
+public class AppendToHDFS extends StreamHandler {
 
     SparkSession sql;
     String file;

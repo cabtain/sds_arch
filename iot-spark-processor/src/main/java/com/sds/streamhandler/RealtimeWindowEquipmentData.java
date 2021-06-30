@@ -1,4 +1,4 @@
-package com.sds.iot.processor;
+package com.sds.iot.streamhandler;
 
 import static com.datastax.spark.connector.japi.CassandraStreamingJavaUtil.javaFunctions;
 
@@ -21,10 +21,12 @@ import com.sds.iot.entity.WindowEquipmentData;
 import com.datastax.spark.connector.japi.CassandraJavaUtil;
 import com.sds.iot.entity.TotalEquipmentData;
 import com.sds.iot.dto.IoTData;
+import com.sds.iot.processor.StreamProcessor;
+import com.sds.iot.processor.StreamHandler;
 
 import scala.Tuple2;
 
-class RealtimeWindowEquipmentData extends StreamHandler {
+public class RealtimeWindowEquipmentData extends StreamHandler {
 
     private static final Logger logger = Logger.getLogger(RealtimeWindowEquipmentData.class);
 

@@ -4,6 +4,10 @@ import com.sds.iot.dto.IoTData;
 import com.sds.iot.util.IoTDataDeserializer;
 import com.sds.iot.util.PropertyFileReader;
 import com.datastax.spark.connector.util.JavaApiHelper;
+import com.sds.iot.streamhandler.AppendToHDFS;
+import com.sds.iot.streamhandler.RealtimeTotalEquipmentData;
+import com.sds.iot.streamhandler.RealtimeWindowEquipmentData;
+import com.sds.iot.mlmodel.RealtimeMLModel;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -83,14 +87,16 @@ public class StreamingProcessor implements Serializable {
         StreamProcessor streamProcessor = new StreamProcessor(kafkaStream);
         streamProcessor.transform();
 
-        //The successors are set like this: hdfs -> total -> window
+        //The successors are set like this: hdfs -> mlModel -> mlModel -> total -> window
         AppendToHDFS hdfs = new AppendToHDFS();
         hdfs.setSql(sparkSession);
         hdfs.setFile(parquetFile);
+        RealtimeMLModel mlModel = new RealtimeMLModel();
         RealtimeTotalEquipmentData total = new RealtimeTotalEquipmentData();
         RealtimeWindowEquipmentData window = new RealtimeWindowEquipmentData();
 
-        hdfs.setSuccessor(total);
+        hdfs.setSuccessor(mlModel);
+        mlModel.setSuccessor(total);
         total.setSuccessor(window);
 
         hdfs.processRequest(streamProcessor);
